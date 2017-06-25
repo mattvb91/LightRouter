@@ -1,0 +1,29 @@
+{
+  "name": "mattvb91/lightrouter",
+  "description": "Lightweight Router",
+  "type": "package",
+  "license": "MIT",
+  "require-dev": {
+    "phpunit/phpunit": "^6.2",
+    "satooshi/php-coveralls": "^1.0"
+  },
+  "authors": [
+    {
+      "name": "Matthias von Bargen",
+      "email": "matt@mavon.ie"
+    }
+  ],
+  "require": {
+    "php": ">=7.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "mattvb91\\LightRouter\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "mattvb91\\LightRouter\\Tests\\": "tests/"
+    }
+  }
+}

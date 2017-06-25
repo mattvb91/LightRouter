@@ -1,0 +1,13 @@
+language: php
+
+php:
+  - '7.1'
+
+before_script:
+  - composer install
+
+script:
+- $TRAVIS_BUILD_DIR/vendor/bin/phpunit --coverage-clover ./tests/logs/clover.xml
+
+after_script:
+- php $TRAVIS_BUILD_DIR/vendor/bin/coveralls -v
