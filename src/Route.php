@@ -3,9 +3,12 @@
 
 namespace mattvb91\LightRouter;
 
+use Closure;
+use Exception;
 use mattvb91\LightRouter\Exceptions\ArgumentMissingException;
+use mattvb91\LightRouter\Exceptions\LightRouterException;
 use mattvb91\LightRouter\Exceptions\MethodMissingException;
-use mattvb91\LightRouter\Interfaces\LightRouteModelInterface;
+use mattvb91\LightRouter\Interfaces\LightRouterModelInterface;
 use ReflectionClass;
 
 /**
@@ -24,6 +27,23 @@ class Route
      * @var string
      */
     private $controller = '';
+
+    const METHOD_GET = 'GET';
+    const METHOD_PUT = 'PUT';
+    const METHOD_POST = 'POST';
+    const METHOD_DELETE = 'DELETE';
+
+    private static $availableMethods = [
+        self::METHOD_GET,
+        self::METHOD_PUT,
+        self::METHOD_POST,
+        self::METHOD_DELETE,
+    ];
+
+    /**
+     * @var string
+     */
+    private $method = 'GET';
 
     /**
      * @var string
@@ -67,18 +87,34 @@ class Route
     /**
      * @return mixed
      * @throws ArgumentMissingException
+     * @throws LightRouterException
      * @throws MethodMissingException
      */
     public function dispatch()
     {
         $this->origParams = $this->getParams();
-        $controller = new $this->controller();
+
+        //Check we have an actually class not a closure
+        if (! $this->controller instanceof Closure)
+        {
+            $controller = new $this->controller();
+        } else
+        {
+            try
+            {
+                return call_user_func($this->controller);
+            } catch (Exception $e)
+            {
+                throw new LightRouterException($e->getMessage(), $e->getCode());
+            }
+        }
 
         if (! method_exists($controller, $this->getAction()))
         {
             throw new MethodMissingException();
         }
 
+        //Check do we need to prepare any of the method parameters
         $reflectionClass = new ReflectionClass($this->controller);
         $reflectionParams = $reflectionClass->getMethod($this->getAction())->getParameters();
 
@@ -99,7 +135,7 @@ class Route
                     {
                         $bindModel = $paramClass::getOneByKey($this->params[$param->getName()]);
                     }
-                } else if ($param->getClass()->implementsInterface(LightRouteModelInterface::class))
+                } else if ($param->getClass()->implementsInterface(LightRouterModelInterface::class))
                 {
                     $bindModel = $paramClass::getForLightRoute($this->params[$param->getName()]);
                 }
@@ -154,5 +190,22 @@ class Route
     public function getOrigParams(): array
     {
         return $this->origParams;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMethod(): string
+    {
+        return $this->method;
+    }
+
+    /**
+     * @param string $method
+     */
+    public function setMethod(string $method)
+    {
+        if (in_array($method, self::$availableMethods))
+            $this->method = $method;
     }
 }
