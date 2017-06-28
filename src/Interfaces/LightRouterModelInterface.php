@@ -8,7 +8,7 @@ namespace mattvb91\LightRouter\Interfaces;
  *
  * Class LightRouteModelInterface
  */
-interface LightRouteModelInterface
+interface LightRouterModelInterface
 {
 
     /**
@@ -18,5 +18,5 @@ interface LightRouteModelInterface
      * @param $routeParam
      * @return mixed
      */
-    public static function getForLightRoute($routeParam): LightRouteModelInterface;
+    public static function getForLightRoute($routeParam): LightRouterModelInterface;
 }

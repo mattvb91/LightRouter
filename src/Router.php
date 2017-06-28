@@ -25,11 +25,16 @@ class Router
      * @param $route
      * @param $controller
      * @param $action
+     * @return mixed
      */
-    public function addRoute($route, $controller, $action = 'index')
+    public function addRoute($route, $controller, $action = 'index'): Route
     {
         if (! key_exists($route, $this->routes))
+        {
             $this->routes[$route] = new Route($route, $controller, $action);
+        }
+
+        return $this->routes[$route];
     }
 
     /**
@@ -65,13 +70,13 @@ class Router
                 $this->activeRoute = $route;
 
                 array_shift($matches);
-                preg_match('/:\S+/', $key, $params);
+                preg_match_all('/:\w+/', $key, $params, PREG_SET_ORDER, 0);
                 foreach ($params as $key => $value)
                 {
                     if ($replace = str_replace(':', '', $value))
                     {
-                        $params[$replace] = $matches[$key];
                         unset($params[$key]);
+                        $params[$replace[0]] = $matches[$key];
                     }
                 }
 

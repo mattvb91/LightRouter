@@ -3,9 +3,9 @@
 
 namespace mattvb91\LightRouter\Tests\Files;
 
-use mattvb91\LightRouter\Interfaces\LightRouteModelInterface;
+use mattvb91\LightRouter\Interfaces\LightRouterModelInterface;
 
-class User implements LightRouteModelInterface
+class User implements LightRouterModelInterface
 {
 
 
@@ -16,7 +16,7 @@ class User implements LightRouteModelInterface
      * @param $routeParam
      * @return mixed
      */
-    public static function getForLightRoute($routeParam): LightRouteModelInterface
+    public static function getForLightRoute($routeParam): LightRouterModelInterface
     {
         return new self();
     }

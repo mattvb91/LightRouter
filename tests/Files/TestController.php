@@ -28,4 +28,17 @@ class TestController
     {
     }
 
+    public function list($user, $page)
+    {
+        return $user * $page;
+    }
+
+    /**
+     * Method used for triggering the ArgumentMissingException
+     * @param $param
+     */
+    public function missingRouteParam($param)
+    {
+    }
+
 }
